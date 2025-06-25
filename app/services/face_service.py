@@ -6,6 +6,16 @@ from PySide6.QtGui import QImage, QPixmap
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 
+def resource_path(relative_path):
+    """Obtener la ruta absoluta al recurso, funciona tanto en desarrollo como en PyInstaller."""
+    try:
+        # PyInstaller crea una carpeta temporal y almacena los archivos allí
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 class FaceService:
     def __init__(self, update_frame, update_info):
         self.update_frame = update_frame
@@ -13,7 +23,9 @@ class FaceService:
         self.video = cv2.VideoCapture(0)
 
         if not self.video.isOpened():
-            print("❌ No se pudo abrir la cámara")
+            print("No se pudo abrir la cámara")
+        else:
+            print("Cámara abierta correctamente")
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.process_frame)
@@ -21,24 +33,26 @@ class FaceService:
         base = os.path.dirname(os.path.abspath(__file__))
 
         # Cargar modelos de género y edad
-        gender_proto = os.path.join(base, "../../models/gender/gender_deploy.prototxt")
-        gender_model = os.path.join(base, "../../models/gender/gender_net.caffemodel")
+        gender_proto = resource_path("models/gender/gender_deploy.prototxt")
+        gender_model = resource_path("models/gender/gender_net.caffemodel")
+        
         self.gender_net = cv2.dnn.readNetFromCaffe(gender_proto, gender_model)
         self.gender_list = ['Male', 'Female']
 
-        age_proto = os.path.join(base, "../../models/age/age_deploy.prototxt")
-        age_model = os.path.join(base, "../../models/age/age_net.caffemodel")
+        age_proto = resource_path("models/age/age_deploy.prototxt")
+        age_model = resource_path("models/age/age_net.caffemodel")
+
         self.age_net = cv2.dnn.readNetFromCaffe(age_proto, age_model)
         self.age_list = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
 
         # Modelo de emociones (Keras)
-        emotion_model_path = os.path.join(base, "../../models/emotion/emotion_model.h5")
+        emotion_model_path = resource_path("models/emotion/emotion_model.h5")
         self.emotion_net = load_model(emotion_model_path, compile=False)
         self.emotion_list = ['Enojado', 'Disgustado', 'Asustado', 'Feliz', 'Triste', 'Sorprendido', 'Neutral']
 
         # Detector de rostro
-        haar_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-        self.face_detector = cv2.CascadeClassifier(haar_path)
+        cascade_path = resource_path("models/haarcascade_frontalface_default.xml")
+        self.face_detector = cv2.CascadeClassifier(cascade_path)
 
     def start(self):
         self.timer.start(30)
@@ -56,9 +70,9 @@ class FaceService:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = self.face_detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
 
-        genero = "Desconocido"
-        edad = "?"
-        emocion = "?"
+        genero = ""
+        edad = "0"
+        emocion = "Ninguna"
 
         for (x, y, w, h) in faces:
             face_img = frame[y:y+h, x:x+w]
