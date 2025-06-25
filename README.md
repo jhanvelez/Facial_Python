@@ -52,7 +52,14 @@ python main.py
 ## 📦 Compilación para distribución
 
 ```bash
-pyinstaller --noconfirm --windowed --onefile main.py
+pyinstaller --noconfirm --onefile --windowed \     
+  --add-data "models/gender/gender_deploy.prototxt:models/gender" \
+  --add-data "models/gender/gender_net.caffemodel:models/gender" \
+  --add-data "models/age/age_deploy.prototxt:models/age" \
+  --add-data "models/age/age_net.caffemodel:models/age" \
+  --add-data "models/emotion/emotion_model.h5:models/emotion" \
+  --add-data "models/haarcascade_frontalface_default.xml:models" \
+  main.py
 ```
 
 ---
