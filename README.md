@@ -24,8 +24,8 @@ La interfaz está hecha con **PySide6**, y se puede ejecutar en **macOS, Windows
 1. **Clona el repositorio:**
 
 ```bash
-git clone https://github.com/tuusuario/facial-app.git
-cd facial-app
+git clone git@github.com:jhanvelez/Facial_Python.git
+cd Facial_Python
 ```
 
 2. **Crea un entorno virtual:**
