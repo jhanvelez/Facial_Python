@@ -1,0 +1,53 @@
+# 🐍 Entorno virtual
+env/
+venv/
+ENV/
+.venv/
+
+# 💾 Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# 🔧 Configuración de PyInstaller / builds
+build/
+dist/
+*.spec
+
+# 📦 Archivos de paquetes
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dll
+
+# 📄 Logs y caché
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+.cache/
+*.sqlite3
+
+# 🧠 Archivos de Keras / Tensorflow
+checkpoint/
+*.ckpt
+*.h5
+*.pb
+
+# 💡 Archivos de configuración de IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# ⚙️ Configuraciones de sistema operativo
+*.iml
+
+# 🔐 Tokens o archivos sensibles (si usas)
+.env
+.env.*
+
+# ✅ Solo incluir modelos explícitamente si los necesitas
+# (descomenta para ignorar modelos, o mantenlos si son necesarios)
+# models/
